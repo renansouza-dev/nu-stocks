@@ -1,0 +1,1 @@
+A Stock App experiment using Micronaut / Micronaut Data
