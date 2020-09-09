@@ -6,12 +6,14 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.validation.Validated;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Validated
 @Controller("/stocks")
 public class StocksController {
 
@@ -36,7 +38,7 @@ public class StocksController {
         final var stock = stocksRepository.findByTicker(ticker.toUpperCase());
 
         if (stock.getId() == null) {
-            return HttpResponse.noContent();
+            return HttpResponse.notFound();
         }
 
         return HttpResponse.ok(stock);
