@@ -1,4 +1,4 @@
-package com.renansouza.stocks;
+package com.renansouza.companies;
 
 import lombok.Getter;
 

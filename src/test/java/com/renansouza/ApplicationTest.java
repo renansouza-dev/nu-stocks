@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 
 @MicronautTest
-public class StocksTest {
+public class ApplicationTest {
 
     @Inject
     EmbeddedApplication application;
