@@ -12,7 +12,8 @@ import org.junit.jupiter.api.*;
 
 import javax.inject.Inject;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -69,21 +70,20 @@ class CompaniesControllerTest {
     @Order(4)
     void updateCompany() {
         var request = HttpRequest.GET("/1");
-        var companies = client.toBlocking().exchange(request, Argument.of(Companies.class));
+        var response = client.toBlocking().exchange(request, Argument.of(Companies.class));
 
-        assertNotNull(companies);
-        assertEquals(200, companies.getStatus().getCode());
+        assertNotNull(response);
+        assertEquals(200, response.getStatus().getCode());
 
         final var newName = "ITSA3";
 
-        companies.getBody().ifPresent(itsa -> itsa.setName(newName));
-        request = HttpRequest.PUT("/", new Gson().toJson(companies.getBody().get()));
-        companies = client.toBlocking().exchange(request, Argument.of(Companies.class));
+        response.getBody().ifPresent(itsa -> itsa.setName(newName));
+        request = HttpRequest.PUT("/", new Gson().toJson(response.getBody().get()));
+        response = client.toBlocking().exchange(request);
 
-        assertNotNull(companies);
-        assertTrue(companies.getBody().isPresent());
-        assertEquals(companies.getBody().get().getName(), newName);
-        assertEquals(204, companies.getStatus().getCode());
+        final var location = response.getHeaders().get("LOCATION");
+        assertEquals("/companies/1", location);
+        assertEquals(204, response.getStatus().getCode());
     }
 
     @Test
@@ -95,4 +95,5 @@ class CompaniesControllerTest {
         assertNotNull(companies);
         assertEquals(204, companies.getStatus().getCode());
     }
+
 }

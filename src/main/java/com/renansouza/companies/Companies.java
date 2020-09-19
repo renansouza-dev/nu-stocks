@@ -3,10 +3,7 @@ package com.renansouza.companies;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,10 +40,12 @@ public class Companies {
 
     @DateCreated
     @PastOrPresent
+    @Getter(AccessLevel.NONE)
     private LocalDateTime dateCreated;
 
     @DateUpdated
     @PastOrPresent
+    @Getter(AccessLevel.NONE)
     private LocalDateTime lastUpdated;
 
 }
