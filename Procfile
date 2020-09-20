@@ -1,1 +1,1 @@
-web: java -cp target/classes/:target/dependency/* com.renansouza.Application
+web: java -jar nu-stocks.jar
