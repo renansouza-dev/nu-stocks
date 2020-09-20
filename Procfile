@@ -1,1 +1,1 @@
-web: java -jar nu-stocks.jar
+web: java -jar target/nu-stocks-0.1.jar
