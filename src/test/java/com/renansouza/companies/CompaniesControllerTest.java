@@ -1,6 +1,7 @@
 package com.renansouza.companies;
 
 import com.google.gson.Gson;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpRequest;
@@ -23,10 +24,16 @@ class CompaniesControllerTest {
     @Client(CompaniesConstants.COMPANIES_ROOT)
     private HttpClient client;
 
+    @Value("${micronaut.user.name}")
+    String username;
+
+    @Value("${micronaut.user.password}")
+    String password;
+
     @Test
     @Order(1)
     void getCompaniesEmpty() {
-        HttpRequest<?> request = HttpRequest.GET("/");
+        HttpRequest<?> request = HttpRequest.GET("/").basicAuth(username, password);
         final var companies = client.toBlocking().exchange(request);
 
         assertNotNull(companies);
@@ -37,7 +44,7 @@ class CompaniesControllerTest {
     @Order(2)
     void getCompanyNotFound() {
         final var exception = Assertions.assertThrows(HttpClientResponseException.class, () -> {
-            HttpRequest<?> request = HttpRequest.GET("/1");
+            HttpRequest<?> request = HttpRequest.GET("/1").basicAuth(username, password);
             final var company = client.toBlocking().exchange(request);
         });
 
@@ -58,7 +65,7 @@ class CompaniesControllerTest {
         company.setSubSector("Intermediarios Financeiros");
         company.setSegment("Bancos");
 
-        HttpRequest<?> request = HttpRequest.POST("/", new Gson().toJson(company));
+        HttpRequest<?> request = HttpRequest.POST("/", new Gson().toJson(company)).basicAuth(username, password);
         final var response = client.toBlocking().exchange(request);
 
         assertNotNull(response);
@@ -69,7 +76,7 @@ class CompaniesControllerTest {
     @Test
     @Order(4)
     void updateCompany() {
-        var request = HttpRequest.GET("/1");
+        var request = HttpRequest.GET("/1").basicAuth(username, password);
         var response = client.toBlocking().exchange(request, Argument.of(Companies.class));
 
         assertNotNull(response);
@@ -79,7 +86,7 @@ class CompaniesControllerTest {
 
         response.getBody().ifPresent(itsa -> itsa.setName(newName));
         request = HttpRequest.PUT("/", new Gson().toJson(response.getBody().get()));
-        response = client.toBlocking().exchange(request);
+        response = client.toBlocking().exchange(request.basicAuth(username, password));
 
         final var location = response.getHeaders().get("LOCATION");
         assertEquals("/companies/1", location);
@@ -89,7 +96,7 @@ class CompaniesControllerTest {
     @Test
     @Order(5)
     void deleteCompany() {
-        var request = HttpRequest.DELETE("/1");
+        var request = HttpRequest.DELETE("/1").basicAuth(username, password);
         var companies = client.toBlocking().exchange(request, Argument.of(Companies.class));
 
         assertNotNull(companies);
