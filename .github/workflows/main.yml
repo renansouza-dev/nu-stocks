@@ -15,22 +15,22 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 14
-#      - name: Cache Maven packages
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
-        - name: Build with Maven
-          run: mvn -B package --file pom.xml
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
 
       # CD step
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.5.6 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.6.8
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "nu-stocks"
           heroku_email: "renansouza-dev@protonmail.com"
           healthcheck: "https://nu-stocks.herokuapp.com/health"
           checkstring: "ok"
-          delay: 5
+          delay: 10
+          rollbackonhealthcheckfailed: true
