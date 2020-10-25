@@ -1,5 +1,7 @@
 A Stock App experiment using Micronaut / Micronaut Data
 
+![example workflow name](https://github.com/renansouza-dev/nu-stocks/workflows/Actions/badge.svg)
+
 1. Build the application into a fat-jar:
 `mvn clean package`
 
