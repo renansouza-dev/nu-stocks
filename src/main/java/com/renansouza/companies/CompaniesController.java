@@ -4,6 +4,8 @@ import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.validation.Validated;
 
 import javax.inject.Inject;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Validated
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller(CompaniesConstants.COMPANIES_ROOT)
 public class CompaniesController {
 
