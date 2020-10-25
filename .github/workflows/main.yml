@@ -3,7 +3,7 @@ name: Actions
 on:
   push:
     branches:
-      - add-testing-workflow
+      - main
 
 jobs:
   build:
@@ -30,7 +30,3 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "nu-stocks"
           heroku_email: "renansouza-dev@protonmail.com"
-          healthcheck: "https://nu-stocks.herokuapp.com/health"
-          checkstring: "ok"
-          delay: 10
-          rollbackonhealthcheckfailed: true
