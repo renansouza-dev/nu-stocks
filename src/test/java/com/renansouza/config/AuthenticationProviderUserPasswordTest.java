@@ -1,6 +1,5 @@
 package com.renansouza.config;
 
-import com.renansouza.companies.CompaniesConstants;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AuthenticationProviderUserPasswordTest {
 
     @Inject
-    @Client(CompaniesConstants.COMPANIES_ROOT)
+    @Client(Constants.COMPANIES_ROOT)
     private HttpClient client;
 
     @Value("${micronaut.user.name}")

@@ -1,6 +1,7 @@
 package com.renansouza.companies;
 
 import com.google.gson.Gson;
+import com.renansouza.config.Constants;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpHeaders;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class CompaniesControllerTest {
 
     @Inject
-    @Client(CompaniesConstants.COMPANIES_ROOT)
+    @Client(Constants.COMPANIES_ROOT)
     private HttpClient client;
 
     @Value("${micronaut.user.name}")
