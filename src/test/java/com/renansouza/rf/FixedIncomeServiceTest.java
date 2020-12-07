@@ -58,7 +58,7 @@ class FixedIncomeServiceTest {
     @DisplayName("Test for a fixed income but get none.")
     void getNoneFixedIncome() {
         when(repository.findAll()).thenReturn(Collections.EMPTY_LIST);
-        final List<FixedIncome> fixedIncomes = service.get();
+        final List<FixedIncome> fixedIncomes = service.findAll();
 
         assertEquals(0, fixedIncomes.size());
     }
@@ -67,7 +67,7 @@ class FixedIncomeServiceTest {
     @DisplayName("Test for a fixed income.")
     void getFixedIncome() {
         when(repository.findAll()).then(invocation -> Collections.singletonList(fixedIncome));
-        final List<FixedIncome> fixedIncomes = service.get();
+        final List<FixedIncome> fixedIncomes = service.findAll();
 
         assertEquals(1, fixedIncomes.size());
         assertEquals(1, fixedIncomes.get(0).getId());

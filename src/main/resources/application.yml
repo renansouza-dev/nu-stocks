@@ -28,12 +28,6 @@ micronaut:
       - pattern: /swagger-ui/**
         access:
           - isAnonymous()
-      - pattern: /rapidoc/**
-        access:
-          - isAnonymous()
-      - pattern: /redoc/**
-        access:
-          - isAnonymous()
 
 datasources:
   default:

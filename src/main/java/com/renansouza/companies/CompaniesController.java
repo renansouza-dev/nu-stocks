@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Validated
+@Tag(name = "company")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller(Constants.COMPANIES_ROOT)
 public class CompaniesController extends DefaultController {
@@ -52,8 +53,7 @@ public class CompaniesController extends DefaultController {
     @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type="Companies")))
     @ApiResponse(responseCode = "201", description = "Company created.")
     @ApiResponse(responseCode = "404", description = "Invalid company supplied.")
-    @Tag(name = "company")
-//    @Post(consumes = MediaType.APPLICATION_JSON)
+    @Post(consumes = MediaType.APPLICATION_JSON)
     MutableHttpResponse<Companies> saveCompany(@Parameter(description="The company data.") @Body @Valid Companies company) {
         final var savedCompany = companiesRepository.save(company);
 

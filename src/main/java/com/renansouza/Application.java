@@ -2,9 +2,13 @@ package com.renansouza;
 
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -15,6 +19,7 @@ import io.swagger.v3.oas.annotations.info.License;
                 contact = @Contact(url = "https://github.com/renansouza-dev", name = "Renan", email = "renansouza-dev@protonmail.com")
         )
 )
+@SecurityScheme(name = "Basic", type = SecuritySchemeType.HTTP, scheme = "basic")
 public class Application {
 
     public static void main(String[] args) {

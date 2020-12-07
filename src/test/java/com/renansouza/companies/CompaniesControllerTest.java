@@ -12,7 +12,14 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.*;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -55,7 +62,7 @@ class CompaniesControllerTest {
 
     @Test
     @Order(3)
-    void saveCompany() {
+    void saveCompany() throws IOException {
         final var company = new Companies();
 
         company.setRegistration("61532644000115");
@@ -65,6 +72,13 @@ class CompaniesControllerTest {
         company.setSector("Financeiro e Outros");
         company.setSubSector("Intermediarios Financeiros");
         company.setSegment("Bancos");
+
+        File logo = new File("src/test/resources/companies/itausa.png");
+        BufferedImage originalImage = ImageIO.read(logo);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(originalImage, "png", baos);
+        
+        company.setLogo(baos.toByteArray());
 
         HttpRequest<?> request = HttpRequest.POST("/", new Gson().toJson(company)).basicAuth(username, password);
         final var response = client.toBlocking().exchange(request);

@@ -15,8 +15,6 @@ import java.util.*;
 @Slf4j
 public class FixedIncomeService {
 
-    // TODO Find date in map -> https://stackoverflow.com/questions/7120052/java-hashmap-search-keys-for-a-date
-
     @Inject
     private FixedIncomeRepository repository;
 
@@ -41,10 +39,18 @@ public class FixedIncomeService {
         holidays.add(LocalDate.of(2020, 12, 25));
 
 
-        // TODO ms para fazer webscrapping nessa pagina https://www.bcb.gov.br/controleinflacao/historicotaxasjuros
+        // TODO ms para fazer webscrapping nessa pagina https://br.advfn.com/indicadores/taxa-selic/valores-historicos
         final List<IndexDetails> indexDetails = Arrays.asList(
+                new IndexDetails("06/08/2020", "09/12/2020", BigDecimal.valueOf(1.90)),
                 new IndexDetails("18/06/2020", "05/08/2020", BigDecimal.valueOf(2.15)),
-                new IndexDetails("06/08/2020", "26/11/2020", BigDecimal.valueOf(1.9))
+                new IndexDetails("07/05/2020", "17/06/2020", BigDecimal.valueOf(2.90)),
+                new IndexDetails("19/03/2020", "06/05/2020", BigDecimal.valueOf(3.65)),
+                new IndexDetails("06/02/2020", "18/03/2020", BigDecimal.valueOf(4.15)),
+                new IndexDetails("12/12/2019", "05/02/2020", BigDecimal.valueOf(4.40)),
+                new IndexDetails("31/10/2019", "11/12/2019", BigDecimal.valueOf(4.90)),
+                new IndexDetails("19/09/2019", "30/10/2019", BigDecimal.valueOf(5.40)),
+                new IndexDetails("01/08/2019", "18/09/2019", BigDecimal.valueOf(5.90)),
+                new IndexDetails("21/06/2019", "31/07/2019", BigDecimal.valueOf(6.40))
         );
 
         indexes = new Indexes("CDI", "Certificado de deposito interbancrio", indexDetails);
@@ -54,7 +60,7 @@ public class FixedIncomeService {
         return repository.save(fixedIncome);
     }
 
-    List<FixedIncome> get() {
+    List<FixedIncome> findAll() {
         return (List<FixedIncome>) repository.findAll();
     }
 
@@ -63,10 +69,11 @@ public class FixedIncomeService {
 
         repository.findAll().forEach(income -> {
             final LocalDate localDate = until == null ? NOW : until;
-
             final long totalDays = income.getDate().datesUntil(localDate).count();
+
             income.getDate().datesUntil(localDate)
-                    .filter(date -> !weekend.contains(date.getDayOfWeek()) && !holidays.contains(date))
+                    .filter(date -> !weekend.contains(date.getDayOfWeek()) && !holidays.contains(date)
+                            && !date.equals(income.getDate()) && !date.equals(localDate))
                     .forEach(date -> calcIncome(income, date));
 
             income.setIof(calcIOF(income.getGrossIncome(), totalDays));
@@ -106,10 +113,6 @@ public class FixedIncomeService {
     }
 
     private void calcIncome(final FixedIncome income, final LocalDate date) {
-        if (date.equals(income.getDate())) {
-            return;
-        }
-
         final double indexValuePercent = (1 + (getIndexValue(date).doubleValue() / 100));
         final double dailyIndexPercent = Math.pow(indexValuePercent, DAILY_PERCENT) - 1;
         final double dailyRatePercent = dailyIndexPercent * (income.getRate().doubleValue() / 100) + 1;
@@ -123,8 +126,8 @@ public class FixedIncomeService {
     private BigDecimal getIndexValue(final LocalDate date) {
         final Optional<IndexDetails> details = indexes.getHistory().stream()
                 .filter(indexDetails ->
-                        (date.isEqual(indexDetails.getStart()) || date.isEqual(indexDetails.getEnd())) ||
-                        (date.isAfter(indexDetails.getStart()) && date.isBefore(indexDetails.getEnd())))
+                        (date.isEqual(indexDetails.getStart()) || date.isAfter(indexDetails.getStart())) &&
+                        (date.isEqual(indexDetails.getEnd()) || date.isBefore(indexDetails.getEnd())))
                 .findFirst();
 
         return details.isPresent() ? details.get().getValue() : BigDecimal.ZERO;
