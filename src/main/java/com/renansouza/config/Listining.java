@@ -1,4 +1,4 @@
-package com.renansouza.companies;
+package com.renansouza.config;
 
 import lombok.Getter;
 
