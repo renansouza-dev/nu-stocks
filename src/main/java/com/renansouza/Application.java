@@ -2,6 +2,7 @@ package com.renansouza;
 
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -19,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
                 contact = @Contact(url = "https://github.com/renansouza-dev", name = "Renan", email = "renansouza-dev@protonmail.com")
         )
 )
-@SecurityScheme(name = "Basic", type = SecuritySchemeType.HTTP, scheme = "basic")
+@SecurityScheme(name = "Basic", type = SecuritySchemeType.HTTP, scheme = "basic", in = SecuritySchemeIn.HEADER)
 public class Application {
 
     public static void main(String[] args) {
