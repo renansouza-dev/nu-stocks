@@ -1,4 +1,4 @@
-package com.renansouza.config;
+package com.renansouza.base;
 
 import java.net.URI;
 
