@@ -12,3 +12,4 @@ out/
 .settings
 .classpath
 *.db
+dependency-reduced-pom.xml
