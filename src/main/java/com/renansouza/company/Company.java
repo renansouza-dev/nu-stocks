@@ -1,18 +1,20 @@
 package com.renansouza.company;
 
-import com.renansouza.config.Auditable;
+import com.renansouza.base.Auditable;
+import com.renansouza.rf.FixedIncome;
 import io.micronaut.core.annotation.Introspected;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.ColumnTransformer;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Data
 @Entity
+@Table(name = "companies", uniqueConstraints =  @UniqueConstraint(columnNames={"registration", "name"}))
 @Introspected
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +37,9 @@ public class Company extends Auditable {
     private boolean manager;
     private boolean listedCompany;
     private boolean administrator;
+
+    @OneToMany
+    private List<FixedIncome> fixedIncomes;
 
     public void canSave() {
         if (super.getId() != null) {

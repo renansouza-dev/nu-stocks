@@ -1,7 +1,7 @@
 package com.renansouza.company;
 
-import com.renansouza.config.Constants;
-import com.renansouza.config.DefaultController;
+import com.renansouza.base.Constants;
+import com.renansouza.base.DefaultController;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -46,7 +46,7 @@ public class CompanyController extends DefaultController {
     }
 
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    MutableHttpResponse<?> getCompany(long id) {
+    MutableHttpResponse<?> getCompany(@PathVariable("id") long id) {
         return HttpResponse
                 .ok(service.findById(id))
                 .header(HttpHeaders.LOCATION, location(Constants.COMPANIES_ROOT, id).getPath());
@@ -70,7 +70,7 @@ public class CompanyController extends DefaultController {
     @ApiResponse(responseCode = "400", description = "Invalid company constrain supplied.")
     @ApiResponse(responseCode = "500", description = "Invalid company business rule supplied.")
     @Operation(summary = "Update a company.", description = "Nothing if everything is ok.")
-    MutableHttpResponse<?> updateCompany(@Body @Valid Company company) {
+    MutableHttpResponse<?> updateCompany(@Parameter(description="The company data.") @Body @Valid Company company) {
         service.update(company);
 
         return HttpResponse
@@ -83,7 +83,7 @@ public class CompanyController extends DefaultController {
     @ApiResponse(responseCode = "500", description = "Invalid company business rule supplied.")
     @Operation(summary = "Delete a company.", description = "Mark a company as deleted and stop listing the company on standard get companies method.")
     @Delete(value = "/{id}", consumes = MediaType.APPLICATION_JSON)
-    MutableHttpResponse<?> deleteCompany(long id) {
+    MutableHttpResponse<?> deleteCompany(@PathVariable("id") long id) {
         service.delete(id);
 
         return HttpResponse

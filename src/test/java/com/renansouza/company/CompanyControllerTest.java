@@ -1,7 +1,7 @@
 package com.renansouza.company;
 
 import com.google.gson.Gson;
-import com.renansouza.config.Constants;
+import com.renansouza.base.Constants;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpHeaders;
