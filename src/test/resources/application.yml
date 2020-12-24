@@ -1,9 +1,31 @@
 micronaut:
   application:
     name: nu-stocks
+  server:
+    http-version: 2.0
+  ssl:
+    enabled: true
+    buildSelfSigned: true
+  endpoints:
+    health:
+      enable: true
+      status:
+        http-mapping:
+          UP: 200
+          DOWN: 500
+          UNKNOWN: 400
   user:
     name: admin
     password: micro
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
+
 datasources:
   default:
     url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
@@ -12,4 +34,5 @@ datasources:
     password: ''
     schema-generate: CREATE_DROP
     dialect: H2
+
 jpa.default.properties.hibernate.hbm2ddl.auto: update

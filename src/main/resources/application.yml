@@ -3,6 +3,18 @@ micronaut:
     name: nu-stocks
   server:
     port: 8081
+    http-version: 2.0
+  ssl:
+    enabled: true
+    buildSelfSigned: true
+  endpoints:
+    health:
+      enable: true
+      status:
+        http-mapping:
+          UP: 200
+          DOWN: 500
+          UNKNOWN: 400
   user:
     name: name
     password: change_it
@@ -15,12 +27,13 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
   security:
-    enabled: true
-    endpoints:
-      login:
-        enabled: true
-      oauth:
-        enabled: true
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
     intercept-url-map:
       - pattern: /swagger/**
         access:
@@ -37,4 +50,5 @@ datasources:
     password: ''
     schema-generate: CREATE_DROP
     dialect: H2
+
 jpa.default.properties.hibernate.hbm2ddl.auto: update
