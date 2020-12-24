@@ -2,11 +2,14 @@ package com.renansouza.company;
 
 import com.renansouza.base.Constants;
 import com.renansouza.base.DefaultController;
+import com.renansouza.base.SortingAndOrderArguments;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.*;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.validation.Validated;
@@ -15,15 +18,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 @Validated
-@SecurityRequirement(name = "Basic")
-@Tag(name = Constants.COMPANIES_ROOT)
+@ExecuteOn(TaskExecutors.IO)
+@Tag(name = "companies")
 @Schema(type = Constants.COMPANIES_ROOT)
 @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -33,15 +35,13 @@ public class CompanyController extends DefaultController {
     @Inject
     CompanyService service;
 
-    //TODO Add filtering to not shown deleted companies as default
-
-    @Get(produces = MediaType.APPLICATION_JSON)
+    @Get(value = "{?args*}" ,produces = MediaType.APPLICATION_JSON)
     @ApiResponse(responseCode = "200", description = "A successful search for companies save.")
     @ApiResponse(responseCode = "500", description = "A failed search for companies save.")
     @Operation(summary = "Search for companies saved.", description = "A list of companies is returned, if any.")
-    MutableHttpResponse<?> getCompanies() {
+    MutableHttpResponse<?> getCompanies(@Valid SortingAndOrderArguments args) {
         return HttpResponse
-                .ok(service.findAll())
+                .ok(service.findAll(args))
                 .header(HttpHeaders.LOCATION, location(Constants.COMPANIES_ROOT).getPath());
     }
 

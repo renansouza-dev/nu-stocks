@@ -1,5 +1,6 @@
 package com.renansouza.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.renansouza.base.Auditable;
 import com.renansouza.rf.FixedIncome;
 import io.micronaut.core.annotation.Introspected;
@@ -38,6 +39,7 @@ public class Company extends Auditable {
     private boolean listedCompany;
     private boolean administrator;
 
+    @JsonIgnore
     @OneToMany
     private List<FixedIncome> fixedIncomes;
 

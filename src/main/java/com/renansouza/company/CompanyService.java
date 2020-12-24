@@ -1,14 +1,17 @@
 package com.renansouza.company;
 
+import com.renansouza.base.SortingAndOrderArguments;
 import io.micronaut.transaction.annotation.ReadOnly;
 import io.micronaut.transaction.annotation.TransactionalAdvice;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Singleton
 public class CompanyService {
@@ -16,11 +19,25 @@ public class CompanyService {
     @Inject
     CompanyRepository repository;
 
+    private final static List<String> VALID_PROPERTY_NAMES = Arrays.asList("id", "name", "registration");
+    private final EntityManager entityManager;
+
+    public CompanyService(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @ReadOnly
-    List<Company> findAll() {
-        final List<Company> companies = StreamSupport
-                .stream(repository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    List<Company> findAll(@NotNull SortingAndOrderArguments args) {
+        String qlString = "SELECT c FROM Company as c";
+        if (args.getOrder().isPresent() && args.getSort().isPresent() && VALID_PROPERTY_NAMES.contains(args.getSort().get())) {
+            qlString += " ORDER BY c." + args.getSort().get() + " " + args.getOrder().get().toLowerCase();
+        }
+
+        TypedQuery<Company> query = entityManager.createQuery(qlString, Company.class);
+        args.getOffset().ifPresent(query::setFirstResult);
+        args.getMax().ifPresent(query::setMaxResults);
+
+        final List<Company> companies = query.getResultList();
 
         if (companies.isEmpty()) {
             throw new CompanyNotFoundException("None company found.");
