@@ -67,20 +67,20 @@ public class FixedIncomeService {
     List<FixedIncome> calcIncome(LocalDate until) {
         final List<FixedIncome> incomes = new ArrayList<>();
 
-        repository.findAll().forEach(income -> {
-            final LocalDate localDate = until == null ? NOW : until;
-            final long totalDays = income.getDate().datesUntil(localDate).count();
-
-            income.getDate().datesUntil(localDate)
-                    .filter(date -> !weekend.contains(date.getDayOfWeek()) && !holidays.contains(date)
-                            && !date.equals(income.getDate()) && !date.equals(localDate))
-                    .forEach(date -> calcIncome(income, date));
-
-            income.setIof(calcIOF(income.getGrossIncome(), totalDays));
-            income.setIr(calcIR(income.getGrossIncome(), totalDays));
-
-            incomes.add(income);
-        });
+//        repository.findAll().forEach(income -> {
+//            final LocalDate localDate = until == null ? NOW : until;
+//            final long totalDays = income.getDate().datesUntil(localDate).count();
+//
+//            income.getDate().datesUntil(localDate)
+//                    .filter(date -> !weekend.contains(date.getDayOfWeek()) && !holidays.contains(date)
+//                            && !date.equals(income.getDate()) && !date.equals(localDate))
+//                    .forEach(date -> calcIncome(income, date));
+//
+////            income.setIof(calcIOF(income.getGrossIncome(), totalDays));
+////            income.setIr(calcIR(income.getGrossIncome(), totalDays));
+//
+//            incomes.add(income);
+//        });
 
         return incomes;
     }
@@ -112,25 +112,25 @@ public class FixedIncomeService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void calcIncome(final FixedIncome income, final LocalDate date) {
-        final double indexValuePercent = (1 + (getIndexValue(date).doubleValue() / 100));
-        final double dailyIndexPercent = Math.pow(indexValuePercent, DAILY_PERCENT) - 1;
-        final double dailyRatePercent = dailyIndexPercent * (income.getRate().doubleValue() / 100) + 1;
-
-        final BigDecimal multiplied = income.getAmount().add(income.getGrossIncome());
-        final BigDecimal grossIncrement = multiplied.multiply(BigDecimal.valueOf(dailyRatePercent)).subtract(multiplied);
-
-        income.setGrossIncome(grossIncrement.add(income.getGrossIncome()));
-    }
-
-    private BigDecimal getIndexValue(final LocalDate date) {
-        final Optional<IndexDetails> details = indexes.getHistory().stream()
-                .filter(indexDetails ->
-                        (date.isEqual(indexDetails.getStart()) || date.isAfter(indexDetails.getStart())) &&
-                        (date.isEqual(indexDetails.getEnd()) || date.isBefore(indexDetails.getEnd())))
-                .findFirst();
-
-        return details.isPresent() ? details.get().getValue() : BigDecimal.ZERO;
-    }
+//    private void calcIncome(final FixedIncome income, final LocalDate date) {
+//        final double indexValuePercent = (1 + (getIndexValue(date).doubleValue() / 100));
+//        final double dailyIndexPercent = Math.pow(indexValuePercent, DAILY_PERCENT) - 1;
+//        final double dailyRatePercent = dailyIndexPercent * (income.getRate().doubleValue() / 100) + 1;
+//
+//        final BigDecimal multiplied = income.getAmount().add(income.getGrossIncome());
+//        final BigDecimal grossIncrement = multiplied.multiply(BigDecimal.valueOf(dailyRatePercent)).subtract(multiplied);
+//
+//        income.setGrossIncome(grossIncrement.add(income.getGrossIncome()));
+//    }
+//
+//    private BigDecimal getIndexValue(final LocalDate date) {
+//        final Optional<IndexDetails> details = indexes.getHistory().stream()
+//                .filter(indexDetails ->
+//                        (date.isEqual(indexDetails.getStart()) || date.isAfter(indexDetails.getStart())) &&
+//                        (date.isEqual(indexDetails.getEnd()) || date.isBefore(indexDetails.getEnd())))
+//                .findFirst();
+//
+//        return details.isPresent() ? details.get().getValue() : BigDecimal.ZERO;
+//    }
 
 }

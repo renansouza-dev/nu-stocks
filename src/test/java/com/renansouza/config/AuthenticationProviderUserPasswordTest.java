@@ -1,6 +1,5 @@
 package com.renansouza.config;
 
-import com.renansouza.base.Constants;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import javax.inject.Inject;
-
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

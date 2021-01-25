@@ -1,6 +1,6 @@
 package com.renansouza.rf;
 
-import com.renansouza.config.Auditable;
+import com.renansouza.base.Auditable;
 import io.micronaut.core.annotation.Introspected;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

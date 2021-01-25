@@ -10,3 +10,6 @@ A Stock App experiment using Micronaut / Micronaut Data
 
 1. Run the Docker image:
 `docker run --rm -p 8080:8080 nu-stocks`
+   
+# References
+https://github.com/kmandawe/micronaut-stock-broker

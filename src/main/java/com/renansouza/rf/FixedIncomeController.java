@@ -1,7 +1,7 @@
 package com.renansouza.rf;
 
-import com.renansouza.config.Constants;
-import com.renansouza.config.DefaultController;
+import com.renansouza.base.Constants;
+import com.renansouza.base.DefaultController;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -18,17 +18,20 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
 
 @Validated
 @Tag(name = "fixed income")
+@SecurityRequirement(name = "JWT")
+@Schema(type = Constants.FIXED_INCOME_ROOT)
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller(Constants.FIXED_INCOME_ROOT)
+@ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON))
 public class FixedIncomeController extends DefaultController {
 
     @Inject
@@ -47,7 +50,7 @@ public class FixedIncomeController extends DefaultController {
                 .header(HttpHeaders.LOCATION, location(Constants.FIXED_INCOME_ROOT, savedFixedIncome.getId()).getPath());
     }
 
-//    @Operation(summary = "Get all fixed Income saved", description = "Get all fixed Income saved is returned")
+    //    @Operation(summary = "Get all fixed Income saved", description = "Get all fixed Income saved is returned")
 //    @ApiResponse(content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type="FixedIncome")))
 //    @ApiResponse(responseCode = "201", description = "All fixed income is returned.")
 //    @ApiResponse(responseCode = "404", description = "No fixed income was found.")
@@ -57,3 +60,6 @@ public class FixedIncomeController extends DefaultController {
         return service.calcIncome(null);
     }
 }
+
+
+

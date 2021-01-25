@@ -58,7 +58,8 @@ public class CompanyService {
 
     @TransactionalAdvice
     Company save(final Company company) {
-        company.canSave();
+        company.canSave(CompanyException.class);
+        company.isAllTrueOrAllFalse();
 
         if (repository.findByNameIgnoreCase(company.getName()).isPresent() ||
             repository.findByRegistration(company.getRegistration()).isPresent()) {
@@ -70,7 +71,8 @@ public class CompanyService {
 
     @TransactionalAdvice
     void update(final Company company) {
-        company.canUpdate();
+        company.canUpdate(CompanyException.class);
+        company.isAllTrueOrAllFalse();
 
         final var companyToUpdate = repository.findById(company.getId());
         if (companyToUpdate.isEmpty()) {
@@ -81,7 +83,7 @@ public class CompanyService {
             cia -> {
                 cia.setName(company.getName());
                 cia.setRegistration(company.getRegistration());
-                cia.setDeleted(company.isDeleted());
+                cia.setActive(company.isActive());
                 cia.setBank(company.isBank());
                 cia.setBroker(company.isBroker());
                 cia.setManager(company.isManager());
@@ -101,7 +103,7 @@ public class CompanyService {
 
         companyToUpdate.ifPresent(
             company -> {
-                company.setDeleted(true);
+                company.setActive(true);
                 repository.update(company);
         });
     }
